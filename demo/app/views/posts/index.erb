@@ -1,2 +1,12 @@
+<%= content_tag :div, nil, data: {
+  react_component: "PostsScreen",
+  react_props: {
+    posts: [
+      {title: "A Post"},
+      {title: "Another Post"},
+      {title: "Yet One More Post"},
+    ]
+  }
+} %>
+
 <%= javascript_include_tag 'posts.bundle' %>
-posts index
