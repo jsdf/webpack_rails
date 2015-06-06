@@ -56,7 +56,7 @@ function makeWatcher() {
       })
 
       buildComplete({
-        stats: statsData,
+        // stats: statsData,
         modules: modules,
       });
     }
