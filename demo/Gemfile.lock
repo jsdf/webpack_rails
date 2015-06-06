@@ -1,5 +1,6 @@
-PATH
-  remote: ../../ruby_node_task
+GIT
+  remote: https://github.com/jsdf/ruby_node_task.git
+  revision: 9b4d5a6a118122082aa1f5eb443c654e3eee0692
   specs:
     node_task (0.1.0)
       daemon_controller (~> 1.2, >= 1.2.0)

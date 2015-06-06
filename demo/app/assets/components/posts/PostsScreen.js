@@ -10,4 +10,3 @@ export default class PostsScreen extends React.Component {
     );
   }
 }
-
