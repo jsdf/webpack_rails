@@ -1,4 +1,4 @@
-require 'tilt'
+require 'tilt' # TODO: add to gemspec
 
 require_relative './sprockets_base_webpack'
 require_relative './webpack_task'
@@ -16,6 +16,8 @@ class WebpackProcessor < Tilt::Template
     result = run_webpack
 
     result[:modules].map{|m| context.depend_on m}
+
+    # TODO: rewrite $asset_root in paths
     context.pathname.open.read
   end
 end
