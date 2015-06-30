@@ -23,17 +23,27 @@ module WebpackTask
     return_value
   end
 
-  def run_webpack
+  def self.run_webpack
     result = nil
 
     task_duration = Benchmark.realtime do
-      result = WebpackTask.with_app_node_path do
-        task = NodeTask.new(WebpackTask.webpack_task_script)
-        task.run
+      result = with_app_node_path do
+        begin
+          task = NodeTask.new(webpack_task_script)
+          task.run
+        rescue NodeTask::Error => e
+          js_error = e.instance_variable_get(:@js_error)
+          e.set_backtrace(js_error[:stack].split('\n')) if js_error
+          raise e
+        end
       end
     end
     Rails.logger.info("Webpack: #{(task_duration*1000).round(3)}ms") if defined?(Rails)
 
     result
+  end
+
+  def run_webpack
+    WebpackTask.run_webpack
   end
 end
