@@ -20,10 +20,12 @@ var path = require('path');
 var glob = require('glob');
 var webpack = require('webpack');
 
-// feel free to change any of the paths in this file to suit your desired directory structure.
-// this shows one possible structure you can use:
-// all the files in app/client/entrypoints are entrypoints to webpack bundles which will be built.
-// if you had a file app/client/entrypoints/users.js it would result in a users.bundle.js output file.
+// feel free to change any of the paths in this file to suit your 
+// desired directory structure. this file shows one possible structure 
+// you can use.
+// in this example, all the files in `app/client/entrypoints` are 
+// entrypoints to webpack bundles which will be built. if you had a file
+// `app/client/entrypoints/users.js` it would result in a `users.bundle.js` output file.
 var entrypoints = glob.sync('app/client/entrypoints/*/').reduce(function(entries, p) {
   entries[path.basename(p)] = path.resolve(p);
   return entries;
@@ -33,8 +35,10 @@ module.exports = {
   entry: entrypoints,
   output: {
     filename: '[name].bundle.js',
-    path: './tmp/webpack', // webpack must output bundles here to be consumed by rails asset pipeline
-    publicPath: '$asset_root/', // required for asset urls to be rewritten by rails asset pipeline
+    // webpack must output bundles here to be consumed by rails asset pipeline
+    path: './tmp/webpack',
+    // required for asset urls to be rewritten by rails asset pipeline
+    publicPath: '$asset_root/',
   },
   resolve: {
     root: [
@@ -53,7 +57,7 @@ module.exports = {
       {test: /\.s(c|a)ss$/, loader: 'style!css!sass'},
       {test: /\.less$/, loader: 'style!css!less'},
       {test: /\.css$/, loader: 'style!css'},
-      {test: /\.(png|jpg)$/, loader: 'url?limit=8192'}, // inline base64 URLs for <=8k images, direct URLs for the rest
+      {test: /\.(png|jpg)$/, loader: 'url?limit=8192'},
       {test: /\.coffee$/, loader: 'coffee'},
       {test: /\.cjsx/, loader: 'cjsx'},
       {
