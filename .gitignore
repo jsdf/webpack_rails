@@ -56,3 +56,4 @@ node_modules
 bower_components
 
 ruby_node_task.*
+pkg/
