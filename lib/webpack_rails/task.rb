@@ -49,6 +49,14 @@ module WebpackRails
 
       def run_webpack(opts = nil)
         result = nil
+        if ENV['DISABLE_WEBPACK']
+          begin
+            result = JSON.parse(File.open(File.join(working_dir, 'webpack-build-result.json')).read)
+          rescue Errno::ENOENT => e
+            result = {modules: []}
+          end
+          return result
+        end
 
         task_duration = Benchmark.realtime do
           result = with_app_node_path do
