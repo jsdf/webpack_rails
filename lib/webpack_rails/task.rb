@@ -47,15 +47,18 @@ module WebpackRails
         return_value
       end
 
+      def build_result
+        begin
+          JSON.parse(File.open(File.join(working_dir, 'webpack-build-result.json')).read)
+        rescue Errno::ENOENT => e
+          {modules: []}
+        end
+      end
+
       def run_webpack(opts = nil)
         result = nil
         if ENV['DISABLE_WEBPACK']
-          begin
-            result = JSON.parse(File.open(File.join(working_dir, 'webpack-build-result.json')).read)
-          rescue Errno::ENOENT => e
-            result = {modules: []}
-          end
-          return result
+          return build_result
         end
 
         task_duration = Benchmark.realtime do
@@ -63,6 +66,7 @@ module WebpackRails
             begin
               task = self.new
               task.run(opts)
+              build_result
             rescue NodeTask::Error => e
               raise self::Error.new(e)
             end
