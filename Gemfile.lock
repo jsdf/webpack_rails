@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    webpack_rails (0.2.0)
+    webpack_rails (0.3.0)
       node_task (~> 0.2.0)
       tilt (~> 1.1)
 
