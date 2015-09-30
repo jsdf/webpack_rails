@@ -8,6 +8,6 @@ Gem::Specification.new do |s|
   s.email       = 'james@jsdf.co'
   s.files       = ["lib/webpack_rails.rb"] + Dir["lib/webpack_rails/**/*"]
   s.homepage    = 'https://rubygems.org/gems/webpack_rails'
-  s.add_runtime_dependency 'node_task',  '~> 0.1.0', '>= 0.1.1'
+  s.add_runtime_dependency 'node_task', '~> 0.2.0'
   s.add_runtime_dependency 'tilt', '~> 1.1'
 end
