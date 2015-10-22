@@ -1,4 +1,4 @@
-require_relative './processor'
+require_relative './sprockets'
 
 module WebpackRails
   class Engine < ::Rails::Engine
@@ -8,12 +8,11 @@ module WebpackRails
       # where [name].bundle.js files should be
       app.assets.append_path Rails.root.join('tmp/webpack/bundles')
 
-      # process
-      app.assets.register_preprocessor('application/javascript', WebpackRails::Processor)
+      WebpackRails::Sprockets.install(app.assets, app.config.webpack_rails)
 
       # stop sprockets from ruining inline sourcemaps in dev
       if Rails.env.development?
-        app.assets.unregister_postprocessor 'application/javascript', Sprockets::SafetyColons
+        app.assets.unregister_postprocessor 'application/javascript', ::Sprockets::SafetyColons
       end
     end
 

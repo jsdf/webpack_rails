@@ -12,9 +12,7 @@ module WebpackRails
       return data unless context.pathname.to_s.include?('.bundle')
 
       # wait til webpack is done before loading
-      result = WebpackRails::Task.run_webpack
-
-      result[:modules].map{|m| context.depend_on m}
+      WebpackRails::Task.run_webpack
 
       bundle_contents = context.pathname.open.read
       # rewrite $asset_paths in strings

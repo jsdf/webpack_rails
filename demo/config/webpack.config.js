@@ -2,7 +2,9 @@ var path = require('path');
 var glob = require('glob');
 var webpack = require('webpack');
 
-var components = glob.sync('app/assets/components/*/').reduce(function(memo, p) {
+var PACKAGE_DIR = 'app/client/packages';
+
+var components = glob.sync(PACKAGE_DIR+'/*/').reduce(function(memo, p) {
   memo[path.basename(p)] = path.resolve(p);
   return memo;
 }, {});
@@ -11,15 +13,12 @@ module.exports = {
   entry: components,
   output: {
     filename: '[name].bundle.js', // Template based on keys in entry above
-    path: './tmp/webpack', // This is where images AND js will go
+    path: './tmp/webpack/bundles', // This is where images AND js will go
     publicPath: '/$asset_root/', // This is used to generate URLs to e.g. images
   },
   resolve: {
-    root: path.resolve('./app/assets/components'),
+    root: path.resolve(PACKAGE_DIR),
   },
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin('common.bundle.js'),
-  ],
   module: {
     loaders: [
       {test: /\.s(c|a)ss$/, loader: 'style!css!sass'}, // use ! to chain loaders

@@ -8,12 +8,15 @@ namespace :webpack do
     end
   end
 
-  task :before_assets_precompile do
-    # with production config, sprockets index isn't updated correctly by the
-    # find_asset monkey patch. instead, we just run it before precompiling assets
-    WebpackRails::Task.run_webpack
+  task :build_once do
+    WebpackRails::Task.with_app_node_path do
+      webpack_cmd_script = `#{WebpackRails::Task.node_command} -e "process.stdout.write(require.resolve('webpack/bin/webpack.js'))"`
+      system "#{WebpackRails::Task.node_command} #{webpack_cmd_script} --config './config/webpack.config.js'"
+    end
   end
 end
 
 # runs before every 'rake assets:precompile'
-Rake::Task['assets:precompile'].enhance(['webpack:before_assets_precompile'])
+# with production config, sprockets index isn't updated correctly by the
+# find_asset monkey patch. instead, we just run it before precompiling assets
+Rake::Task['assets:precompile'].enhance(['webpack:build_once'])

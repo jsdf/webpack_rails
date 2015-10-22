@@ -1,14 +1,16 @@
 require 'sprockets'
-require_relative './task'
 
-# reopen Sprockets::Base and monkeypatch resolve
+# reopen Sprockets::Base
 class Sprockets::Base
-  original_resolve = instance_method(:resolve)
+  def self.before_find_asset(&block)
+    @before_find_asset_callbacks ||= []
+    @before_find_asset_callbacks << block
+  end
 
-  define_method :resolve, ->(logical_path, options = {}, &block) {
-    if logical_path.to_s.include?('.bundle')
-      WebpackRails::Task.run_webpack # ensure output files exist so original_resolve doesn't fail
+  def self.run_before_find_asset_callbacks
+    @before_find_asset_callbacks ||= []
+    @before_find_asset_callbacks.each do |block|
+      block.call
     end
-    original_resolve.bind(self).(logical_path, options, &block)
-  }
+  end
 end

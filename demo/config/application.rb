@@ -12,5 +12,10 @@ module Demo
     config.active_record.raise_in_transactional_callbacks = true
 
     config.assets.precompile += %w( posts.bundle.js )
+
+    config.webpack_rails = {
+      use_dev_server: Rails.env.development?,
+      dev_server_host: 'http://localhost:9876',
+    }
   end
 end

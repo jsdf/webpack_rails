@@ -6,10 +6,7 @@ class Sprockets::Index
   original_find_asset = instance_method(:find_asset)
 
   define_method :find_asset, ->(path, options = {}) {
-    unless @_webpack_built
-      WebpackRails::Task.run_webpack # ensure output files exist so original_find_asset doesn't fail
-      @_webpack_built = true
-    end
+    self.class.run_before_find_asset_callbacks
     original_find_asset.bind(self).(path, options)
   }
 end
