@@ -4,9 +4,9 @@ module WebpackRails
   class RequireDirectiveProcessor < Tilt::Template
     DIRECTIVE_PATTERN = /^.*?=\s*webpack_require\s+(.*?)\s*$/
 
-    def self.configure(environment = ::Sprockets, configuration)
+    def self.configure(webpack_config)
       Class.new(RequireDirectiveProcessor) do
-        self.config = configuration
+        self.config = webpack_config
       end
     end
 
@@ -25,12 +25,16 @@ module WebpackRails
       self.class.config
     end
 
+    def dev_server_base_url
+      "#{config[:protocol]}://#{config[:host]}:#{config[:port]}"
+    end
+
     def process_require(context, locals, bundle_filename)
       # allow webpack-dev-server to handle
-      if config[:use_dev_server]
+      if config[:dev_server]
         # TODO: extract webpack dev server host
         if bundle_filename.end_with? '.js'
-          return %{document.write('<script src="#{config[:dev_server_host]}/#{bundle_filename}"></script>');}
+          return %{document.write('<script src="#{dev_server_base_url}/#{bundle_filename}"></script>');}
         end
       end
       # will be handled by normal sprockets require

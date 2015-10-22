@@ -1,17 +1,23 @@
 require 'rails_helper'
+require 'sprockets/webpack_environment'
+require 'webpack_rails/sprockets_integration'
 
 RSpec.describe "webpack bundle in dev" do
   before(:each) do
     root = File.expand_path('../../', __FILE__)
 
     @env = Sprockets::Environment.new
+    @env = Sprockets::WebpackEnvironment.copy_from(@env)
     @env.append_path File.join(root, 'app/assets/javascripts')
     @env.append_path File.join(root, 'tmp/webpack/bundles')
 
-    WebpackRails::Sprockets.install(@env, {
-      use_dev_server: true,
-      dev_server_host: 'http://localhost:9876',
-    })
+    @env.webpack_config = {
+      dev_server: true,
+      host: 'localhost',
+      port: 9876,
+    }
+
+    WebpackRails::SprocketsIntegration.install(@env, @env.webpack_config)
   end
 
   it "builds successfully" do

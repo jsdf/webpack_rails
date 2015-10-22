@@ -14,8 +14,10 @@ module Demo
     config.assets.precompile += %w( posts.bundle.js )
 
     config.webpack_rails = {
-      use_dev_server: Rails.env.development?,
-      dev_server_host: 'http://localhost:9876',
+      dev_server: Rails.env.development?,
+      host: 'localhost',
+      port: 9876,
+      webpack_config_file: Rails.root.join('config', 'webpack.config.js'),
     }
   end
 end

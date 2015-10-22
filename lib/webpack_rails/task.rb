@@ -47,14 +47,18 @@ module WebpackRails
         return_value
       end
 
-      def run_webpack(opts = nil)
+      def run_webpack(opts = {})
         return if ENV['DISABLE_WEBPACK']
 
         task_duration = Benchmark.realtime do
           with_app_node_path do
             begin
               task = self.new
-              task.run(opts)
+              task.run(
+                opts.merge(
+                  webpack_config_file: opts[:webpack_config_file] ? opts[:webpack_config_file].to_s : nil,
+                )
+              )
             rescue NodeTask::Error => e
               raise self::Error.new(e)
             end
