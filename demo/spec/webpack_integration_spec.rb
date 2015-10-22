@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "webpack bundle", :type => :request do
+RSpec.describe "webpack sprockets rails integration", :type => :request do
   it "builds successfully" do
     get "/assets/application.js"
 

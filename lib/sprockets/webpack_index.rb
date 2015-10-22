@@ -2,11 +2,11 @@ require 'sprockets'
 require 'sprockets/index'
 
 module Sprockets
-  class WebpackIndex < Sprockets::Index
+  class WebpackIndex < Index
     def find_asset(*args)
-      if @environment.webpack_config[:dev_server]
+      if @environment.webpack_task_config[:dev_server]
         # ensure webpack-dev-server is running
-        WebpackRails::Task.run_webpack(@environment.webpack_config)
+        WebpackRails::Task.run_webpack(@environment.webpack_task_config)
       end
 
       super

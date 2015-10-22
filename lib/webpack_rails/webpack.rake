@@ -8,11 +8,8 @@ namespace :webpack do
     end
   end
 
-  task :build_once do
-    WebpackRails::Task.with_app_node_path do
-      webpack_cmd_script = `#{WebpackRails::Task.node_command} -e "process.stdout.write(require.resolve('webpack/bin/webpack.js'))"`
-      system "#{WebpackRails::Task.node_command} #{webpack_cmd_script} --config './config/webpack.config.js'"
-    end
+  task :build_once => :environment do
+    WebpackRails::Task.build_once(Rails.application.config.webpack_rails)
   end
 end
 

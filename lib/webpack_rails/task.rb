@@ -47,14 +47,42 @@ module WebpackRails
         return_value
       end
 
+      # TODO: move to NodeTask
+      def alive?
+        current_pid = nil
+        alive = false
+        if @controller
+          begin
+            current_pid = @controller.pid
+          rescue Errno::ENOENT
+          end
+        end
+        if current_pid
+          begin
+            Process.getpgid(current_pid)
+            alive = true
+          rescue Errno::ESRCH
+          end
+        end
+        alive
+      end
+
+      def build_once(webpack_task_config)
+        WebpackRails::Task.with_app_node_path do
+          webpack_cmd_script = `#{WebpackRails::Task.node_command} -e "process.stdout.write(require.resolve('webpack/bin/webpack.js'))"`
+          system "#{WebpackRails::Task.node_command} #{webpack_cmd_script} --config #{webpack_task_config[:webpack_config_file]}"
+        end
+      end
+
       def run_webpack(opts = {})
         return if ENV['DISABLE_WEBPACK']
 
+        result = nil
         task_duration = Benchmark.realtime do
           with_app_node_path do
             begin
               task = self.new
-              task.run(
+              result = task.run(
                 opts.merge(
                   webpack_config_file: opts[:webpack_config_file] ? opts[:webpack_config_file].to_s : nil,
                 )
@@ -66,8 +94,8 @@ module WebpackRails
         end
 
         task_duration_ms = task_duration * 1000
-        if defined?(Rails) && task_duration_ms > 10
-          Rails.logger.info("Webpack: #{task_duration_ms.round(0)}ms")
+        if defined?(Rails) && result && result[:started]
+          Rails.logger.info("Started webpack-dev-server in #{task_duration_ms.round(0)}ms")
         end
       end
 

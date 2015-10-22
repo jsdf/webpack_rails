@@ -1,17 +1,15 @@
-require 'sprockets/webpack_environment'
+require_relative './sprockets_environment'
 
 module WebpackRails
   class Engine < ::Rails::Engine
     engine_name 'webpack'
 
     initializer :setup_webpack_rails, after: 'sprockets.environment', group: :all do |app|
-      app.assets = Sprockets::WebpackEnvironment.copy_from(app.assets)
       unless app.config.webpack_rails
         fail 'app.config.webpack_rails not set'
       end
-      app.assets.webpack_config = app.config.webpack_rails
 
-      WebpackRails::SprocketsIntegration.install(app.assets, app.assets.webpack_config)
+      WebpackRails::SprocketsEnvironment.enhance!(app.assets, app.config.webpack_rails)
 
       # where [name].bundle.js files should be
       app.assets.append_path Rails.root.join('tmp/webpack/bundles')

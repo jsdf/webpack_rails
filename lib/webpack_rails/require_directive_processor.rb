@@ -4,9 +4,9 @@ module WebpackRails
   class RequireDirectiveProcessor < Tilt::Template
     DIRECTIVE_PATTERN = /^.*?=\s*webpack_require\s+(.*?)\s*$/
 
-    def self.configure(webpack_config)
+    def self.configure(webpack_task_config)
       Class.new(RequireDirectiveProcessor) do
-        self.config = webpack_config
+        self.config = webpack_task_config
       end
     end
 

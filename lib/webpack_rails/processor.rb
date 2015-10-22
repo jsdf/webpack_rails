@@ -2,9 +2,9 @@ require 'tilt'
 
 module WebpackRails
   class Processor < Tilt::Template
-    def self.configure(webpack_config)
+    def self.configure(webpack_task_config)
       Class.new(Processor) do
-        self.config = webpack_config
+        self.config = webpack_task_config
       end
     end
 
