@@ -28,8 +28,24 @@ module WebpackRails
         @webpack_gem_dir ||= File.dirname(File.expand_path(__FILE__))
       end
 
-      def webpack_task_script
-        @webpack_task_script ||= File.join(webpack_gem_dir, 'webpack-task.js')
+      def webpack_task_watch_script
+        @webpack_task_watch_script ||= File.join(webpack_gem_dir, 'webpack-task-watch.js')
+      end
+
+      def webpack_task_dev_server_script
+        @webpack_task_dev_server_script ||= File.join(webpack_gem_dir, 'webpack-task-dev-server.js')
+      end
+
+      def webpack_task_script(opts)
+        return webpack_task_watch_script if opts[:watch]
+        return webpack_task_dev_server_script if opts[:dev_server]
+        fail "can't determine which task to run"
+      end
+
+      def webpack_task_opts(opts)
+        opts.merge(
+          webpack_config_file: opts[:webpack_config_file] ? opts[:webpack_config_file].to_s : nil,
+        )
       end
 
       def app_node_path
@@ -81,12 +97,8 @@ module WebpackRails
         task_duration = Benchmark.realtime do
           with_app_node_path do
             begin
-              task = self.new
-              result = task.run(
-                opts.merge(
-                  webpack_config_file: opts[:webpack_config_file] ? opts[:webpack_config_file].to_s : nil,
-                )
-              )
+              task = self.new(webpack_task_script(opts))
+              result = task.run(webpack_task_opts(opts))
             rescue NodeTask::Error => e
               raise self::Error.new(e)
             end
@@ -94,9 +106,12 @@ module WebpackRails
         end
 
         task_duration_ms = task_duration * 1000
-        if defined?(Rails) && result && result[:started]
-          Rails.logger.info("Started webpack-dev-server in #{task_duration_ms.round(0)}ms")
+        if defined?(Rails) && result
+          if opts[:dev_server] && result[:started]
+            Rails.logger.info("Started webpack-dev-server in #{task_duration_ms.round(0)}ms")
+          end
         end
+        result
       end
 
       private
@@ -107,10 +122,6 @@ module WebpackRails
         FileUtils.mkpath(wd)
         wd
       end
-    end
-
-    def initialize
-      super(self.class.webpack_task_script)
     end
   end
 end

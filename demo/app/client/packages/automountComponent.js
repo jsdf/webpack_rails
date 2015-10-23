@@ -1,16 +1,10 @@
 import React from 'react'
 
-let registeredComponents = new Map();
+const registeredComponents = new Map();
+const mountedComponentNodes = new Map();
 let ready = false;
 
-document.addEventListener('DOMContentLoaded', () => {
-  ready = true;
-    for (let [name, Component] of registeredComponents.entries()) {
-      mountComponent(name, Component);
-    }
-});
-
-function mountComponent(name, Component) {
+function mountComponent(Component, name) {
   Array.from(document.querySelectorAll(`[data-react-component="${name}"]`))
     .map((node) => {
       let props = null;
@@ -19,15 +13,37 @@ function mountComponent(name, Component) {
       }
 
       React.render(<Component {...props} />, node);
+      mountedComponentNodes.set(name, node);
     });
+}
+
+function unmountComponent(name) {
+  if (mountedComponentNodes.has(name)) {
+    React.unmountComponentAtNode(mountedComponentNodes.get(name));
+    mountedComponentNodes.delete(name);
+  }
+}
+
+function unregisterComponent(name) {
+  if (registeredComponents.has(name)) {
+    registeredComponents.delete(name);
+  }
+  unmountComponent(name);
 }
 
 export default function registerComponent(name, Component) {
   if (registeredComponents.has(name)) {
-    throw new Error(`automountComponent "${name}" already registered`);
+    throw new Error(`registerComponent "${name}" already registered`);
   }
-
   registeredComponents.set(name, Component);
 
-  if (ready) mountComponent(name, Component);
+  if (ready) mountComponent(Component, name);
+
+  return () => unregisterComponent(name);
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  ready = true;
+  registeredComponents.forEach(mountComponent);
+});

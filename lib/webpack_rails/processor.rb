@@ -19,11 +19,25 @@ module WebpackRails
     def prepare
     end
 
+    def rewrite_asset_paths(contents, context)
+      contents.gsub(/['"]\$asset_path\/([^'"]+?)['"]/) {|s| "'#{context.asset_path($1)}'" }
+    end
+
     def evaluate(context, locals)
       return data unless context.pathname.to_s.include?('.bundle')
 
-      # rewrite $asset_paths in strings
-      data.gsub(/['"]\$asset_path\/([^'"]+?)['"]/) {|s| "'#{context.asset_path($1)}'" }
+      file_contents = nil
+      if self.class.config[:watch]
+        result = WebpackRails::Task.run_webpack(self.class.config)
+
+        result[:modules].map{|m| context.depend_on m}
+
+        file_contents = context.pathname.open.read # reload file contents after build
+      else
+        file_contents = data
+      end
+
+      rewrite_asset_paths(file_contents, context)
     end
   end
 end

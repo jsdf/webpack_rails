@@ -1,4 +1,10 @@
 import PostsScreen from './PostsScreen'
-import automountComponent from '../automountComponent'
+import registerComponent from '../automountComponent'
 
-automountComponent('PostsScreen', PostsScreen);
+const unregisterComponent = registerComponent('PostsScreen', PostsScreen);
+
+// not needed with react-transform-hmr
+if (module.hot) {
+  module.hot.accept();
+  module.hot.dispose(unregisterComponent);
+}

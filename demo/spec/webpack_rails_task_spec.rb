@@ -10,7 +10,10 @@ RSpec.describe WebpackRails::Task do
   end
 
   it "runs webpack" do
-    result = WebpackRails::Task.run_webpack
+    result = WebpackRails::Task.run_webpack({
+      watch: true,
+      webpack_config_file: Rails.root.join('config', 'webpack.config.js'),
+    })
     expect(result).not_to be_nil
   end
 end

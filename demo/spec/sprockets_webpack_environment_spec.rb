@@ -34,10 +34,7 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
         port: 9001,
       }
     end
-
-    before(:each) do
-      asset # build asset
-    end
+    before(:each) { asset }
 
     it "builds the asset with a reference to the bundle" do
       expect(asset).not_to be_nil
@@ -45,24 +42,45 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
     end
   end
 
-  context "without dev server" do
+  context "with watch" do
+    let(:webpack_task_config) do
+      {
+        watch: true,
+      }
+    end
+
+    before(:each) do
+      # remove any existing webpack build artifacts
+      Dir["#{bundles_dir}/*.js"].each{ |p| File.delete(p) }
+    end
+
+    before(:each) { asset }
+
+    it "builds the asset with bundle included" do
+      expect(asset).not_to be_nil
+      expect(asset.to_s).to include('PostsScreen')
+    end
+
+    it "starts the watch daemon" do
+      expect(WebpackRails::Task.alive?).to be true
+    end
+  end
+
+  context "without dev server or watch" do
     let(:webpack_task_config) do
       {
         dev_server: false,
+        watch: false,
       }
     end
 
     before(:all) do
-      # remove any existing webpack build artifacts
-      Dir["#{bundles_dir}/*.js"].each{ |p| File.delete(p) }
-
       # run webpack like assets:precompile
       `bundle exec rake webpack:build_once`
     end
 
-    before(:each) do
-      asset # build asset
-    end
+    before(:each) { asset }
+
 
     it "builds the asset with bundle included" do
       expect(asset).not_to be_nil

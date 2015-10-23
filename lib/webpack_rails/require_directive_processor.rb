@@ -30,13 +30,13 @@ module WebpackRails
     end
 
     def process_require(context, locals, bundle_filename)
-      # allow webpack-dev-server to handle
       if config[:dev_server]
-        # TODO: extract webpack dev server host
         if bundle_filename.end_with? '.js'
           return %{document.write('<script src="#{dev_server_base_url}/#{bundle_filename}"></script>');}
         end
+        return ''
       end
+
       # will be handled by normal sprockets require
       context.require_asset(bundle_filename)
       return ''

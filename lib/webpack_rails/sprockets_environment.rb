@@ -6,6 +6,7 @@ require 'webpack_rails/processor'
 module WebpackRails
   class SprocketsEnvironment
     DEFAULT_WEBPACK_TASK_CONFIG = {
+      dev_server: false,
       protocol: 'http',
       host: 'localhost',
       port: 9876,
