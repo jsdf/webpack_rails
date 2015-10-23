@@ -4,11 +4,9 @@ module WebpackRails
   class Engine < ::Rails::Engine
     engine_name 'webpack'
 
-    initializer :setup_webpack_rails, after: 'sprockets.environment', group: :all do |app|
-      unless app.config.webpack_rails
-        fail 'app.config.webpack_rails not set'
-      end
+    config.webpack_rails = ActiveSupport::OrderedOptions.new
 
+    initializer :setup_webpack_rails, after: 'sprockets.environment', group: :all do |app|
       WebpackRails::SprocketsEnvironment.enhance!(app.assets, app.config.webpack_rails)
 
       # where [name].bundle.js files should be

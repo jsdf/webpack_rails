@@ -17,7 +17,7 @@ module WebpackRails
       end
 
       def webpack_task_config
-        DEFAULT_WEBPACK_TASK_CONFIG.merge(@webpack_task_config)
+        @webpack_task_config.merge(DEFAULT_WEBPACK_TASK_CONFIG).merge(@webpack_task_config)
       end
 
       def install_webpack_task_processors!
