@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'webpack_rails'
-  s.version     = '1.0.1'
+  s.version     = '1.1.0'
   s.licenses    = ['MIT']
   s.summary     = "This is an webpack_rails!"
   s.description = "Much longer explanation of the webpack_rails!"
