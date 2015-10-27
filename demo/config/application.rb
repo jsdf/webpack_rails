@@ -15,5 +15,6 @@ module Demo
 
     config.webpack_rails.dev_server = Rails.env.development?
     config.webpack_rails.webpack_config_file = Rails.root.join('config', 'webpack.config.js')
+    config.webpack_rails.port = 9080
   end
 end
