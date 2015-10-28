@@ -30,7 +30,10 @@ module WebpackRails
       if self.class.config[:watch]
         result = WebpackRails::Task.run_webpack(self.class.config)
 
-        result[:modules].map{|m| context.depend_on m}
+        # add webpack bundle dependencies as sprockets dependencies for this file
+        result[:modules].map do |m|
+          context.depend_on(m) if m.start_with?('/') # ignore non-filepath entries
+        end
 
         file_contents = context.pathname.open.read # reload file contents after build
       else
