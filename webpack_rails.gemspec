@@ -1,6 +1,8 @@
+require 'json'
+
 Gem::Specification.new do |s|
   s.name        = 'webpack_rails'
-  s.version     = '1.1.1'
+  s.version     = JSON.load(File.new('./lib/webpack_rails/package.json'))['version']
   s.licenses    = ['MIT']
   s.summary     = "This is an webpack_rails!"
   s.description = "Much longer explanation of the webpack_rails!"
