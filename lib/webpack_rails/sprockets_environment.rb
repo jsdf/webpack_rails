@@ -10,7 +10,6 @@ module WebpackRails
       protocol: 'http',
       host: 'localhost',
       port: 9876,
-      dev_server_reload: true, # reload when HMR fails
     }
 
     module EnvironmentWebpackInstanceMethods
