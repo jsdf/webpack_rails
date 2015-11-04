@@ -32,13 +32,14 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
         dev_server: true,
         host: 'localhost',
         port: 9001,
+        dev_server_reload: true,
       }
     end
     before(:each) { asset }
 
     it "builds the asset with a reference to the bundle" do
       expect(asset).not_to be_nil
-      expect(asset.to_s).to include(%{document.write('<script src="http://localhost:9001/posts.bundle.js"></script>');})
+      expect(asset.to_s).to include(%{document.write('<script src="http://localhost:9001/posts.bundle.js?reload=true"></script>');})
     end
   end
 

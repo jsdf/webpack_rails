@@ -32,7 +32,7 @@ module WebpackRails
     def process_require(context, locals, bundle_filename)
       if config[:dev_server]
         if bundle_filename.end_with? '.js'
-          return %{document.write('<script src="#{dev_server_base_url}/#{bundle_filename}"></script>');}
+          return %{document.write('<script src="#{dev_server_base_url}/#{bundle_filename}?reload=#{config[:dev_server_reload]}"></script>');}
         end
         return ''
       end
