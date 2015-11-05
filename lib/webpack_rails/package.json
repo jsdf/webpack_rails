@@ -1,6 +1,6 @@
 {
   "name": "webpack_rails",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "",
   "main": "webpack-dev-server.js",
   "scripts": {
