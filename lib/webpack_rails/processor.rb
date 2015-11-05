@@ -23,6 +23,10 @@ module WebpackRails
       contents.gsub(/['"]\$asset_path\/([^'"]+?)['"]/) {|s| "'#{context.asset_path($1)}'" }
     end
 
+    def dependable_asset(filepath)
+      File.file?(filepath) # ignore non-filepath entries
+    end
+
     def evaluate(context, locals)
       return data unless context.pathname.to_s.include?('.bundle')
 
@@ -32,7 +36,7 @@ module WebpackRails
 
         # add webpack bundle dependencies as sprockets dependencies for this file
         result[:modules].map do |m|
-          context.depend_on(m) if m.start_with?('/') # ignore non-filepath entries
+          context.depend_on(m) if dependable_asset(m)
         end
 
         file_contents = context.pathname.open.read # reload file contents after build
