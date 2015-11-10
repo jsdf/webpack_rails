@@ -9,8 +9,6 @@ module WebpackRails
       def initialize(node_task_error)
         super(node_task_error.to_s)
 
-        # TODO: expose @js_error from NodeTask::Error
-        js_error = node_task_error.instance_variable_get(:@js_error)
         set_backtrace(js_error[:stack].split('\n')) if js_error
       end
     end
@@ -61,26 +59,6 @@ module WebpackRails
         end
         ENV['NODE_PATH'] = prev_node_path
         return_value
-      end
-
-      # TODO: move to NodeTask
-      def alive?
-        current_pid = nil
-        alive = false
-        if @controller
-          begin
-            current_pid = @controller.pid
-          rescue Errno::ENOENT
-          end
-        end
-        if current_pid
-          begin
-            Process.getpgid(current_pid)
-            alive = true
-          rescue Errno::ESRCH
-          end
-        end
-        alive
       end
 
       def build_once(webpack_task_config)
