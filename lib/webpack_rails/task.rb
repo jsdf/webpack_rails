@@ -9,6 +9,8 @@ module WebpackRails
       def initialize(node_task_error)
         super(node_task_error.to_s)
 
+        js_error = node_task_error.js_error
+
         set_backtrace(js_error[:stack].split('\n')) if js_error
       end
     end
