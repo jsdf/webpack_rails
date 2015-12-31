@@ -7,14 +7,11 @@ module WebpackRails
     config.webpack_rails = ActiveSupport::OrderedOptions.new
 
     initializer :setup_webpack_rails, after: 'sprockets.environment', group: :all do |app|
-      WebpackRails::SprocketsEnvironment.enhance!(app.assets, app.config.webpack_rails)
+      app.config.assets.configure do |env|
+        WebpackRails::SprocketsEnvironment.enhance!(env, app.config.webpack_rails)
 
-      # where [name].bundle.js files should be
-      app.assets.append_path Rails.root.join('tmp/webpack/bundles')
-
-      # stop sprockets from ruining inline sourcemaps in dev
-      if Rails.env.development?
-        app.assets.unregister_postprocessor 'application/javascript', ::Sprockets::SafetyColons
+        # where [name].bundle.js files should be
+        env.append_path Rails.root.join('tmp/webpack/bundles')
       end
     end
 

@@ -1,5 +1,5 @@
 require 'sprockets'
-require 'sprockets/webpack_index'
+require 'webpack_rails/sprockets_cached_environment'
 require 'webpack_rails/require_directive_processor'
 require 'webpack_rails/processor'
 
@@ -31,8 +31,13 @@ module WebpackRails
         register_preprocessor 'text/css', require_directive_processor
       end
 
+      def cached
+        WebpackRails::SprocketsCachedEnvironment.new(self)
+      end
+
+      # sprockets 2.x compat
       def index
-        Sprockets::WebpackIndex.new(self)
+        cached
       end
     end
 

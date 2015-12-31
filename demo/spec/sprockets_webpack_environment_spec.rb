@@ -36,7 +36,7 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
     end
     before(:each) { asset }
 
-    it "builds the asset with a reference to the bundle" do
+    it "processes the asset to emit a script tag pointing to the dev server bundle url" do
       expect(asset).not_to be_nil
       expect(asset.to_s).to include(%{document.write('<script src="http://localhost:9001/posts.bundle.js"></script>');})
     end
@@ -56,7 +56,7 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
 
     before(:each) { asset }
 
-    it "builds the asset with bundle included" do
+    it "processes the asset to include bundle contents" do
       expect(asset).not_to be_nil
       expect(asset.to_s).to include('PostsScreen')
     end
@@ -82,7 +82,7 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
     before(:each) { asset }
 
 
-    it "builds the asset with bundle included" do
+    it "processes the asset to include bundle contents" do
       expect(asset).not_to be_nil
       expect(asset.to_s).to include('PostsScreen')
     end
