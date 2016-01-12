@@ -66,7 +66,7 @@ module WebpackRails
       def build_once(webpack_task_config)
         WebpackRails::Task.with_app_node_path do
           webpack_cmd_script = `#{WebpackRails::Task.node_command} -e "process.stdout.write(require.resolve('webpack/bin/webpack.js'))"`
-          system "#{WebpackRails::Task.node_command} #{webpack_cmd_script} --config #{webpack_task_config[:webpack_config_file]}"
+          system "#{WebpackRails::Task.node_command} '#{webpack_cmd_script}' --config #{webpack_task_config[:webpack_config_file]}"
         end
       end
 
