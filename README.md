@@ -21,15 +21,13 @@ Create a webpack config file at `config/webpack.config.js` (configurable).
 var webpack = require('webpack');
 
 module.exports = {
-  // set up entrypoints in the usual way (see below for an automated multi-bundle approach)
+  // set up entrypoints in the usual webpack way
   entry: 'app/client/main.js',
   output: {
     // output filenames must end in .bundle.js (.bundle.css for ExtractTextPlugin)
     filename: '[name].bundle.js',
     // webpack must output bundles here
     path: './tmp/webpack',
-    // required for asset urls (eg. images) to be rewritten by rails' asset_path helper
-    publicPath: '$asset_root/',
   },
   // configure some loaders
   module: {
@@ -39,13 +37,6 @@ module.exports = {
     ],
   },
 };
-```
-
-You can include the bundled webpack output in a normal Sprockets asset file via the `webpack_require` directive:
-
-```js
-// in application.js
-//= webpack_require posts.bundle.js
 ```
 
 You can provide configuration with the `config.webpack_rails` object:
@@ -69,6 +60,25 @@ Alternatively, you can just run webpack in 'watch' mode:
 ```ruby
 # development.rb
 config.webpack_rails.watch = true
+```
+
+When referencing bundles, eg. in `javascript_include_tag` or `stylesheet_link_tag`, use the
+`webpack_bundle_asset` helper so that in `dev_server` mode, the asset is loaded
+from the webpack dev server, and otherwise is resolved as a regular asset.
+
+```erb
+= javascript_include_tag webpack_bundle_asset('app.bundle.js')
+= stylesheet_link_tag webpack_bundle_asset('app.bundle.css'), media: 'screen, print'
+```
+
+### Sprockets integration
+
+While transitioning your codebase away from Sprockets, you can include the bundled 
+webpack output in a normal Sprockets asset file via the `webpack_require` directive:
+
+```js
+// in application.js
+//= webpack_require posts.bundle.js
 ```
 
 Finally, in production you can just run `assets:precompile` and webpack will automatically run before assets are precompiled.
@@ -158,6 +168,43 @@ var entrypoints = glob.sync('app/client/entrypoints/*/').reduce(function(entries
 module.exports = {
   entry: entrypoints,
   // ...
+};
+```
+
+### require media assets from webpack js/css
+
+```js
+// config/webpack.config.js
+var webpack = require('webpack');
+
+module.exports = {
+  // ...
+  output: {
+    // ...
+    // required for asset urls (eg. images) to be rewritten by Sprockets' asset_path helper
+    publicPath: '$asset_root/',
+  },
+  module: {
+    loaders: [
+      //...
+      // enable requiring images from css/js.
+      // this will copy files to a path inside the directory specified by the 
+      // webpack `output.path` setting, eg. './tmp/webpack/bundles', and in the source 
+      // they will be referred to as as their location inside that directory, prefixed
+      // by the webpack `output.publicPath` setting, '$asset_path/'.
+      // WebpackRails::Processor will rewrite strings starting with '$asset_path'
+      // using the Sprockets asset_path helper, so Sprockets can resolve those 
+      // files and digest them etc. in the usual Rails Asset Pipeline way.
+      // https://github.com/webpack/file-loader
+      {
+        test: /\.(png|jpg|gif)$/,
+        loader: 'file-loader',
+        query: {
+          name: '[path][name].[ext]',
+        },
+      },
+    ],
+  },
 };
 ```
 

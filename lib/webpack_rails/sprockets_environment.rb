@@ -2,23 +2,17 @@ require 'sprockets'
 require 'webpack_rails/sprockets_cached_environment'
 require 'webpack_rails/require_directive_processor'
 require 'webpack_rails/processor'
+require 'webpack_rails/config'
 
 module WebpackRails
   class SprocketsEnvironment
-    DEFAULT_WEBPACK_TASK_CONFIG = {
-      dev_server: false,
-      protocol: 'http',
-      host: 'localhost',
-      port: 9876,
-    }
-
     module EnvironmentWebpackInstanceMethods
       def webpack_task_config=(new_webpack_task_config)
         @webpack_task_config = new_webpack_task_config
       end
 
       def webpack_task_config
-        @webpack_task_config.merge(DEFAULT_WEBPACK_TASK_CONFIG).merge(@webpack_task_config)
+        WebpackRails::Config::DEFAULT_CONFIG.clone.merge(@webpack_task_config)
       end
 
       def install_webpack_task_processors!
