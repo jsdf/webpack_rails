@@ -10,3 +10,5 @@ end
 
 Rake::Task['spec'].enhance(['npm_install_gem_deps'])
 Rake::Task['build'].enhance(['npm_install_gem_deps'])
+
+task :default => [:spec]
