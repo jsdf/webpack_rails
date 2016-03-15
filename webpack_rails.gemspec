@@ -14,6 +14,7 @@ the ultimate goal of transitioning off of Sprockets entirely."
   s.authors     = ["James Friend"]
   s.email       = 'james@jsdf.co'
   s.files       = ["lib/webpack_rails.rb"] + Dir["lib/webpack_rails/**/*"] + Dir["lib/sprockets/**/*"]
+  s.extensions  = ['lib/webpack_rails/Rakefile']
   s.homepage    = 'https://rubygems.org/gems/webpack_rails'
   s.add_runtime_dependency 'node_task', '0.3.5'
   s.add_runtime_dependency 'sprockets', '~> 3'

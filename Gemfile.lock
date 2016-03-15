@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    webpack_rails (2.0.1)
+    webpack_rails (3.0.0)
       node_task (= 0.3.5)
       sprockets (~> 3)
 
@@ -166,4 +166,4 @@ DEPENDENCIES
   webpack_rails!
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
