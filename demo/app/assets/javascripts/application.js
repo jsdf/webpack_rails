@@ -10,5 +10,3 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= webpack_require posts.bundle.js
-//= webpack_require users.bundle.js

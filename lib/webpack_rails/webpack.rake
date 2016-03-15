@@ -15,7 +15,5 @@ namespace :webpack do
   end
 end
 
-# runs before every 'rake assets:precompile'
-# with production config, sprockets index isn't updated correctly by the
-# find_asset monkey patch. instead, we just run it before precompiling assets
+# run webpack before every 'rake assets:precompile' (eg. build for production)
 Rake::Task['assets:precompile'].enhance(['webpack:build_once'])

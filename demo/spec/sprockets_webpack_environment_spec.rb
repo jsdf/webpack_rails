@@ -19,33 +19,23 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
     new_env.append_path bundles_dir
     new_env
   end
-  let(:asset) { env["application.js"] }
+  let(:asset) { env["posts.bundle.js"] }
+  let(:webpack_environment_vars) do
+    {
+      'WEBPACK_TEST_DEFINE' => 'WEBPACK_RAILS_1234567890',
+    }
+  end
 
   before(:each) do
     # ensure daemon not running
     WebpackRails::Task.release if WebpackRails::Task.alive?
   end
 
-  context "with dev server" do
-    let(:webpack_task_config) do
-      {
-        dev_server: true,
-        host: 'localhost',
-        port: 9001,
-      }
-    end
-    before(:each) { asset }
-
-    it "processes the asset to emit a script tag pointing to the dev server bundle url" do
-      expect(asset).not_to be_nil
-      expect(asset.to_s).to include(%{document.write('<script src="http://localhost:9001/posts.bundle.js"></script>');})
-    end
-  end
-
   context "with watch" do
     let(:webpack_task_config) do
       {
         watch: true,
+        env: webpack_environment_vars,
       }
     end
 
@@ -61,6 +51,10 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
       expect(asset.to_s).to include('PostsScreen')
     end
 
+    it "passes through config env vars" do
+      expect(asset.to_s).to include(webpack_environment_vars['WEBPACK_TEST_DEFINE'])
+    end
+
     it "starts the watch daemon" do
       expect(WebpackRails::Task.alive?).to be true
     end
@@ -71,20 +65,25 @@ RSpec.describe WebpackRails::SprocketsEnvironment do
       {
         dev_server: false,
         watch: false,
+        # env at build time comes from application.rb
       }
     end
 
     before(:all) do
       # run webpack like assets:precompile
-      `bundle exec rake webpack:build_once`
+      # uses config from application.rb
+      `WEBPACK_TEST_DEFINE="default" WEBPACK_TEST_DEFINE_OVERWRITE="WEBPACK_RAILS_1234567890" bundle exec rake webpack:build_once`
     end
 
     before(:each) { asset }
 
-
     it "processes the asset to include bundle contents" do
       expect(asset).not_to be_nil
       expect(asset.to_s).to include('PostsScreen')
+    end
+
+    it "passes through config env vars" do
+      expect(asset.to_s).to include(webpack_environment_vars['WEBPACK_TEST_DEFINE'])
     end
 
     it "does not start the dev server" do

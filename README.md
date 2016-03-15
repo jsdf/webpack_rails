@@ -91,13 +91,28 @@ add your webpack output path to Sprockets, if you're using it.
 
 Finally, in production you can just run `assets:precompile` and webpack will automatically run before assets are precompiled.
 
+### Passing configuration through to webpack config
 
-```js
-// in application.js
-//= webpack_require posts.bundle.js
+You can set environment variables which will be passed through to the webpack process (which the webpack config file is run in):
+
+```ruby
+# production.rb
+
+config.webpack_rails.env['WEBPACK_CONFIG_OPTIMIZE'] = 'true'
 ```
 
-Finally, in production you can just run `assets:precompile` and webpack will automatically run before assets are precompiled.
+Then you can access these environment variables from your webpack config file:
+
+```js
+// your webpack config
+module.exports = {
+  //...
+};
+
+if (process.env.WEBPACK_CONFIG_OPTIMIZE) {
+  module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin());
+}
+```
 
 ### Output CSS to a file
 
@@ -140,30 +155,9 @@ if (process.env.WEBPACK_CONFIG_EXTRACT_CSS) {
 
 You can then set the `WEBPACK_CONFIG_EXTRACT_CSS` environment variable in your `production.rb`:
 ```ruby
-ENV['WEBPACK_CONFIG_EXTRACT_CSS'] = 'true'
-```
+# production.rb
 
-Include the output file into a Sprockets CSS file using `webpack_require`. When using the dev server, this will not output anything, otherwise it will require the CSS output in the usual way.
-```css
-/*
- * in application.css
- *= webpack_require posts.bundle.css
-*/
-```
-
-### app code package directories
-
-You can configure one or more directories for 'packages' of your application code which can be required by package name, like those in the node_modules directory:
-```js
-module.exports = {
-  // ...
-  resolve: {
-    root: [
-      // application modules can live in app/client/modules
-      path.resolve('app/client/modules'),
-    ],
-  },
-};
+config.webpack_rails.env['WEBPACK_CONFIG_EXTRACT_CSS'] = 'true'
 ```
 
 Finally, you can include the output CSS file on a page by calling `webpack_bundle_asset`:
