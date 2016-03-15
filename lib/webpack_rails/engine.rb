@@ -13,10 +13,8 @@ module WebpackRails
 
     initializer :setup_webpack_rails, after: 'sprockets.environment', group: :all do |app|
       app.config.assets.configure do |env|
+        # ensure webpack has run before sprockets resolves assets
         WebpackRails::SprocketsEnvironment.enhance!(env, app.config.webpack_rails)
-
-        # where [name].bundle.js files should be
-        env.append_path Rails.root.join('tmp/webpack/bundles')
       end
     end
 

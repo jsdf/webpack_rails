@@ -16,6 +16,12 @@ module.exports = {
     path: './tmp/webpack/bundles', // This is where images AND js will go
     publicPath: '/$asset_root/', // This is used to generate URLs to e.g. images
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      // used to test that environment vars are passed through from rails
+      'WEBPACK_TEST_DEFINE': JSON.stringify(process.env.WEBPACK_TEST_DEFINE),
+    }),
+  ],
   resolve: {
     root: path.resolve(PACKAGE_DIR),
   },
