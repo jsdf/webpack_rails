@@ -13,6 +13,9 @@ module Demo
 
     config.assets.precompile += %w( posts.bundle.js )
 
+    # where webpack bundles will be output
+    config.assets.paths << Rails.root.join('tmp', 'webpack', 'bundles')
+
     config.webpack_rails.dev_server = Rails.env.development?
     config.webpack_rails.webpack_config_file = Rails.root.join('config', 'webpack.config.js')
     config.webpack_rails.port = 9080
