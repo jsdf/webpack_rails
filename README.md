@@ -1,6 +1,8 @@
 # webpack_rails
 Integrates Webpack with Rails/Sprockets
 
+## NO LONGER MAINTAINED
+
 The main rationale of this approach is to keep things working relatively seamlessly and automatically alongside existing Sprockets-based code, and meeting the developer-experience expectations of Rails developers, while working towards the ultimate goal of transitioning off of Sprockets entirely.
 
 ## Quickstart
@@ -208,4 +210,4 @@ module.exports = {
 };
 ```
 
-Used in production at [Culture Amp](https://www.cultureamp.com/)
+Formerly used at [Culture Amp](https://www.cultureamp.com/)
